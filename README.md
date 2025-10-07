@@ -159,4 +159,22 @@ networks:
     depends_on:
       - prometheus
     restart: unless-stopped
+
+```
+
+### Задание 6 
+
+**Выполните действия.**
+
+1. Настройте поочередность запуска контейнеров.
+2. Настройте режимы перезапуска для контейнеров.
+3. Настройте использование контейнерами одной сети.
+5. Запустите сценарий в detached режиме.
+
+```
+root@lyndsey:~/docker-pt2-hw# docker ps -a
+CONTAINER ID   IMAGE                     COMMAND                  CREATED              STATUS              PORTS                                         NAMES
+975d10226943   grafana/grafana           "/run.sh"                7 seconds ago        Up 6 seconds        0.0.0.0:81->3000/tcp, [::]:81->3000/tcp       sergeeva-ea-netology-grafana
+941c53f2a94f   prom/pushgateway:v1.6.2   "/bin/pushgateway"       About a minute ago   Up About a minute   0.0.0.0:9091->9091/tcp, [::]:9091->9091/tcp   sergeeva-ea-netology-pushgateway
+699bf8a0de74   prom/prometheus:v2.47.2   "/bin/prometheus --w…"   About a minute ago   Up About a minute   0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp   sergeeva-ea-netology-prometheus
 ```
