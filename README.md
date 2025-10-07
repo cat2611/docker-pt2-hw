@@ -51,11 +51,16 @@ networks.
 6. 
 
 ```
-Поле для вставки кода...
-....
-....
-....
-....
+version: '3'
+services:
+volumes:
+networks:
+  sergeeva-ea-my-netology-hw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: '10.5.0.0/16'
+        - gateway: '10.5.0.0/1'
 ```
 
 `При необходимости прикрепитe сюда скриншоты
@@ -66,21 +71,37 @@ networks.
 
 ### Задание 3
 
-`Приведите ответ в свободной форме........`
+`**Выполните действия:** 
 
-1. `Заполните здесь этапы выполнения, если требуется ....`
-2. `Заполните здесь этапы выполнения, если требуется ....`
-3. `Заполните здесь этапы выполнения, если требуется ....`
-4. `Заполните здесь этапы выполнения, если требуется ....`
-5. `Заполните здесь этапы выполнения, если требуется ....`
-6. 
+1. Создайте конфигурацию docker-compose для Prometheus с именем контейнера <ваши фамилия и инициалы>-netology-prometheus. 
+2. Добавьте необходимые тома с данными и конфигурацией (конфигурация лежит в репозитории в директории [6-04/prometheus](https://github.com/netology-code/sdvps-homeworks/tree/main/lecture_demos/6-04/prometheus) ).
+3. Обеспечьте внешний доступ к порту 9090 c докер-сервера.`
+
 
 ```
-Поле для вставки кода...
-....
-....
-....
-....
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus:v2.47.2
+    container_name: sergeeva-ea-netology-prometheus
+    command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      -9090:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    networks:
+      - sergeeva-ea-my-netology-hw
+    restart: always
+volumes:
+  prometheus-data:
+networks:
+  sergeeva-ea-my-netology-hw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: '10.5.0.0/16'
+        - gateway: '10.5.0.0/1'
 ```
 
 `При необходимости прикрепитe сюда скриншоты
@@ -88,22 +109,54 @@ networks.
 
 ### Задание 4
 
-`Приведите ответ в свободной форме........`
+`**Выполните действия:**
 
-1. `Заполните здесь этапы выполнения, если требуется ....`
-2. `Заполните здесь этапы выполнения, если требуется ....`
-3. `Заполните здесь этапы выполнения, если требуется ....`
-4. `Заполните здесь этапы выполнения, если требуется ....`
-5. `Заполните здесь этапы выполнения, если требуется ....`
-6. 
+1. Создайте конфигурацию docker-compose для Pushgateway с именем контейнера <ваши фамилия и инициалы>-netology-pushgateway. 
+2. Обеспечьте внешний доступ к порту 9091 c докер-сервера.`
+
 
 ```
-Поле для вставки кода...
-....
-....
-....
-....
+
+  pushgateway:
+    image: prom/pushgateway:v1.6.2
+    container_name: sergeeva-ea-netology-pushgateway
+    ports:
+      - 9091:9091
+    networks:
+      - sergeeva-ea-my-netology-hw
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
 ```
 
 `При необходимости прикрепитe сюда скриншоты
 ![Название скриншота](ссылка на скриншот)`
+
+### Задание 5 
+
+**Выполните действия:** 
+
+1. Создайте конфигурацию docker-compose для Grafana с именем контейнера <ваши фамилия и инициалы>-netology-grafana. 
+2. Добавьте необходимые тома с данными и конфигурацией (конфигурация лежит в репозитории в директории [6-04/grafana](https://github.com/netology-code/sdvps-homeworks/blob/main/lecture_demos/6-04/grafana/custom.ini).
+3. Добавьте переменную окружения с путем до файла с кастомными настройками (должен быть в томе), в самом файле пропишите логин=<ваши фамилия и инициалы> пароль=netology.
+4. Обеспечьте внешний доступ к порту 3000 c порта 80 докер-сервера.
+
+
+```
+ grafana:
+    image: grafana/grafana
+    container_name: sergeeva-ea-netology-grafana
+    environment:
+      GF_PATHS_CONFIG: /etc/grafana/custom.ini
+    ports:
+      -80:3000
+    volumes:
+      - ./grafana: /etc/grafana
+      - grafana-data: /var/lib/grafana
+    networks:
+      - sergeeva-ea-my-netology-hw
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+```
