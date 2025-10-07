@@ -26,12 +26,12 @@ services:
     image: grafana/grafana
     container_name: sergeeva-ea-netology-grafana
     environment:
-      GF_PATHS_CONFIG: /etc/grafana/custom.ini
+      GF_PATHS_CONFIG:/etc/grafana/custom.ini
     ports:
       -80:3000
     volumes:
-      - ./grafana: /etc/grafana
-      - grafana-data: /var/lib/grafana
+      - ./grafana:/etc/grafana
+      - grafana-data:/var/lib/grafana
     networks:
       - sergeeva-ea-my-netology-hw
     depends_on:
